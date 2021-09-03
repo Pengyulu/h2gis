@@ -33,6 +33,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 import java.sql.*;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -202,9 +203,10 @@ public class  DBFEngineTest {
         Statement st = connection.createStatement();
         st.execute("drop table if exists sotchi");
         st.execute("CALL DBFREAD("+StringUtils.quoteStringSQL(DBFEngineTest.class.getResource("sotchi.dbf").getPath())+", 'SOTCHI', 'cp1251');");
-        st.execute("CALL DBFWRITE('target/sotchi.dbf', 'SOTCHI', 'cp1251');");
+        String uuid = UUID.randomUUID().toString().replaceAll("-","");
+        st.execute("CALL DBFWRITE('target/sotchi"+uuid+".dbf', 'SOTCHI', 'cp1251');");
         st.execute("drop table if exists sotchi");
-        st.execute("CALL FILE_TABLE('target/sotchi.dbf', 'SOTCHI_GOODHEADER');");
+        st.execute("CALL FILE_TABLE('target/sotchi"+uuid+".dbf', 'SOTCHI_GOODHEADER');");
         // Check if fields name are OK
         try (ResultSet rs = st.executeQuery("SELECT * FROM SOTCHI_GOODHEADER")) {
             // Check if fields name are OK
